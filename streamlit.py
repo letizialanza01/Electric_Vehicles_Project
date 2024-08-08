@@ -4,6 +4,7 @@ import pandas as pd
 import os 
 import numpy as np 
 import matplotlib.pyplot as plt 
+import matplotlib.cm as cm
 import seaborn as sns
 import io 
 from io import BytesIO
@@ -80,28 +81,77 @@ elif current_tab == 'Cleaning':
     
     st.write('Before proceeding with the analysis, the null values in the dataset were analyzed and then eliminated.')
     
-    tab1, tab2 = st.tabs(['NA values', 'Cleaning'])
-    
-    with tab1:
-        st.write('Scroll down to find null values')
-        #calculates the count of missing values 
-        electric_vehicles = electric_vehicles.drop(['VIN (1-10)', 'Postal Code', 'Base MSRP', 'Legislative District', 'DOL Vehicle ID', 'Vehicle Location', '2020 Census Tract'], axis = 1)
-        missing_values_count = electric_vehicles.isna().sum()
+    #calculates the count of missing values 
+    electric_vehicles = electric_vehicles.drop(['VIN (1-10)', 'Postal Code', 'Base MSRP', 'Legislative District', 'DOL Vehicle ID', 'Vehicle Location', '2020 Census Tract'], axis = 1)
+    missing_values_count = electric_vehicles.isna().sum()
         
-        #create a new DataFrame with the count and percentage of missing values 
-        missing_df = pd.DataFrame({
-            'Variable': missing_values_count.index,
-            'NA Values': missing_values_count.values
-        })
+    #create a new DataFrame with the count and percentage of missing values 
+    missing_df = pd.DataFrame({
+        'Variable': missing_values_count.index,
+        'NA Values': missing_values_count.values
+    })
         
-        #show the DataFrame of missing values 
-        st.write(missing_df)
+    #show the DataFrame of missing values 
+    st.write(missing_df)
         
-    with tab2:
-        st.markdown('''
-                    In this case, since the 'County', 'City' and 'Electric Utility' columns contain categorical variables and not numeric variables, it would not be correct to replace missing values with mathematical operations such as mode or median. So the null values have been dropped.''')
+    st.markdown('''
+                In this case, since the 'County', 'City' and 'Electric Utility' columns contain categorical variables and not numeric variables, it would not be correct to replace missing values with mathematical operations such as mode or median. So the null values have been dropped.''')
 
 
 ##########exlporatory data analysis 
 elif current_tab == 'Exploratory Data Analysis':
     st.title('Exploratory Data Analysis') 
+    
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10, tab11 = st.tabs(['Top companies', 'TESLA', 'CHEVROLET', 'NISSAN', 'FORD', 'KIA', 'BMW', 'TOYOTA', 'VOLKSWAGEN', 'JEEP', 'HYUNDAI'])
+
+with tab1:
+    vehicles_counts_by_name = electric_vehicles.groupby('Make').size().sort_values(ascending = False)  #group by 'Make', count occurrences, and sort by the count in descending order
+
+    #select the top 10 companies
+    top_companies = vehicles_counts_by_name.index[:10]
+    top_values = vehicles_counts_by_name.values[:10]
+
+    #print the top 10 companies and their values
+    for company, count in zip(top_companies, top_values):
+        print(f'For {company}, the number of electric vehicles registered are {count}')
+
+    #plot the 10 companies
+    plt.figure(figsize = (12, 6))
+    sns.barplot(x = top_companies, y = top_values, edgecolor = 'black', linewidth = 1, alpha = 0.7, palette = 'Accent', hue = list(top_companies)[:10], dodge = False, legend = False)
+    plt.xlabel('Companies', fontsize = 12, fontweight = 'bold', color = 'blue')
+    plt.ylabel('Values', fontsize = 12, fontweight = 'bold', color = 'blue')
+    plt.title('Top electric car companies', fontsize = 18, fontweight = 'bold', color = 'red')
+    plt.xticks(rotation = 45, fontsize = 10)
+    plt.yticks(fontsize = 10)
+    plt.grid(axis = 'y', linestyle = '--', alpha = 0.5)
+
+    plt.tight_layout()
+    plt.show()
+    
+    #define a colormap to generate distinctive colors
+    num_companies = len(top_companies)
+    cmap = cm.get_cmap('tab20', num_companies * 2) 
+    num_cols = 2  #two columns and rows for the plots
+    num_rows = (num_companies + 1) // num_cols  #calculate the necessary number of rows
+
+    plt.figure(figsize = (12, 6 * num_rows))
+
+    for idx, company in enumerate(top_companies):
+        company_data = electric_vehicles[electric_vehicles['Make'] == company]
+        total_sales = company_data.shape[0]
+        model_sales_counts = company_data.groupby('Model').size().sort_values(ascending = False)
+        top_selling_model = model_sales_counts.index[0]
+        top_selling_model_count = model_sales_counts.iloc[0]
+
+        sales_data = [top_selling_model_count, total_sales - top_selling_model_count]  #prepare the data for the pie chart
+        labels = [top_selling_model, 'Other models']
+        colors = [cmap(idx * 2), cmap(idx * 2 + 1)]  #select a pair of distinctive colors for each pie chart 
+
+        #create the pie chart for total and top model sales 
+        plt.subplot(num_rows, num_cols, idx + 1) 
+        plt.pie(sales_data, labels = labels, autopct = '%1.1f%%', colors = colors, textprops = {'fontsize': 12, 'fontweight': 'bold', 'color': 'black'})
+        plt.title(f'Total vs Top Model Sales for {company}', fontsize = 18, fontweight = 'bold', color = 'red')
+
+    plt.subplots_adjust(wspace = 0.3, hspace = 0.4)
+    plt.tight_layout()
+    plt.show()

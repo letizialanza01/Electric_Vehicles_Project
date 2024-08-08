@@ -79,12 +79,13 @@ elif current_tab == 'Cleaning':
     st.title('Cleaning the NA values')
     
     st.write('Before proceeding with the analysis, the null values in the dataset were analyzed and then eliminated.')
-    st.write('Scroll down to find null values')
     
     tab1, tab2 = st.tabs(['NA values', 'Cleaning'])
     
     with tab1:
+        st.write('Scroll down to find null values')
         #calculates the count of missing values 
+        electric_vehicles = electric_vehicles.drop(['VIN (1-10)', 'Postal Code', 'Base MSRP', 'Legislative District', 'DOL Vehicle ID', 'Vehicle Location', '2020 Census Tract'], axis = 1)
         missing_values_count = electric_vehicles.isna().sum()
         
         #create a new DataFrame with the count and percentage of missing values 
@@ -103,4 +104,4 @@ elif current_tab == 'Cleaning':
 
 ##########exlporatory data analysis 
 elif current_tab == 'Exploratory Data Analysis':
-    st.title('Exploratory Data Analysis')
+    st.title('Exploratory Data Analysis') 

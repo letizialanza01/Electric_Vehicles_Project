@@ -35,7 +35,7 @@ st.sidebar.markdown(
 
 ##########introduction
 if current_tab == 'Introduction':
-    st.markdown('<h1 style = "text-align: center;"> Electric cars currently registered</h1>', unsafe_allow_html = True)
+    st.markdown('<h1 style = "text-align: center;"> Registered electric cars in the USA </h1>', unsafe_allow_html = True)
     st.subheader('Programming for Data Science: Final Project')
     st.markdown('''
                 **Author:** Letizia Lanza
@@ -102,6 +102,8 @@ elif current_tab == 'Cleaning':
 elif current_tab == 'Exploratory Data Analysis':
     st.title('Exploratory Data Analysis') 
     
+    st.write('The chosen dataset has multiple data, therefore, in order to make the exploratory data analysis more understandable and meaningful, it was chosen to focus only on the data for the 10 companies that attest to higher values of registered cars. Furthermore it is assumed that the most registered car models are at the same time the units sold/the best selling models.')
+    
     tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10, tab11 = st.tabs(['Top companies', 'TESLA', 'CHEVROLET', 'NISSAN', 'FORD', 'KIA', 'BMW', 'TOYOTA', 'VOLKSWAGEN', 'JEEP', 'HYUNDAI'])
 
     with tab1:
@@ -127,6 +129,8 @@ elif current_tab == 'Exploratory Data Analysis':
         #print the top 10 companies and their values
         for company, count in zip(top_companies, top_values):
             st.write(f'For {company}, the number of electric vehicles registered are {count}')
+        
+        st.write('Below is intended to highlight the percentage of best-selling model sales for each of the top 10 car companies in comparison to total sales.')
         
         #define a colormap to generate distinctive colors
         num_companies = len(top_companies)
@@ -155,6 +159,30 @@ elif current_tab == 'Exploratory Data Analysis':
         plt.subplots_adjust(wspace = 0.3, hspace = 0.4)
         plt.tight_layout()
         st.pyplot(plt.gcf())
+        
+        st.write('Still, shown below are the 15 cities with the highest number of electric cars registered.')
+        
+        filtered_data = electric_vehicles[electric_vehicles['Model Year'] >= 2005]  #filter the dataframe to include only rows where 'Model Year' is 2005 or later
+        city_counts = filtered_data['City'].value_counts().reset_index()  #count occurrences of each city in the filtered data and reset index
+        city_counts.columns = ['City', 'Count']
+        city_counts = city_counts.sort_values(by = 'Count', ascending = False)
+        top_15_cities = city_counts.head(15)
+        palette = sns.color_palette('muted', len(top_15_cities))
+
+        #create a vertical bar chart
+        plt.figure(figsize = (12, 6))
+        bars = plt.bar(top_15_cities['City'], top_15_cities['Count'], color = palette)
+        plt.title('Top 15 cities by number of electric vehicles sold from 2005', fontsize = 18, fontweight = 'bold', color = 'red')
+        plt.xlabel('City', fontsize = 12, fontweight = 'bold', color = 'blue')
+        plt.ylabel('Number of cars sold', fontsize = 12, fontweight = 'bold', color = 'blue')
+        plt.xticks(rotation = 45, fontsize = 10)
+        plt.yticks(fontsize = 10)
+        plt.grid(axis = 'y', linestyle = '--', alpha = 0.5)
+
+        plt.tight_layout()
+        st.pyplot(plt.gcf())
+        
+        st.write('Seattle is definitely the city with more registered electric cars than any other city. This is the result of a combination of favorable environmental policies, economic incentives, community environmental awareness, infrastructure support and a local sustainability-oriented culture.')
         
     with tab2:
         tesla_data = electric_vehicles[electric_vehicles['Make'] == 'TESLA']  #filter the data for Tesla models

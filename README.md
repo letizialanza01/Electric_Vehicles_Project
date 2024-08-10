@@ -7,8 +7,10 @@ The dataset is about the Battery Electric Vehicles (BEVs) and Plug-in Hybrid Ele
 
 The project is divided into two parts:
 
-part 1: dataset exploration, dataset cleaning and interesting plots
-part 2: ML algorithms
+**part 1:** dataset exploration, dataset cleaning and interesting plots
+
+**part 2:** ML algorithms
+
 Moreover, a presentation using Streamlit has been done.
 
-Author: Letizia Lanza
+**Author:** Letizia Lanza

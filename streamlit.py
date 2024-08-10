@@ -204,6 +204,35 @@ elif current_tab == 'Exploratory Data Analysis':
         plt.tight_layout()
         st.pyplot(plt.gcf())
         
+        tesla_data = electric_vehicles[electric_vehicles['Make'] == 'TESLA']  #filter the data for Tesla models
+        tesla_top_model_data = tesla_data.groupby('Model').size().sort_values(ascending = False)  #find the top Tesla model
+        top_tesla_model = tesla_top_model_data.index[0]
+        top_tesla_model_data = tesla_data[tesla_data['Model'] == top_tesla_model]  #filter the data for the top model
+        tesla_yearly_sales = top_tesla_model_data.groupby('Model Year').size()  #count the number of units sold per year for the top model
+        tesla_sales_df = pd.DataFrame(tesla_yearly_sales).reset_index()  #convert the series to a dataframe for clearer printing
+        tesla_sales_df.columns = ['Model Year', 'Units Sold']
+        tesla_sales_df['Model Year'] = tesla_sales_df['Model Year'].astype(str)
+        tesla_sales_df['Units Sold'] = tesla_sales_df['Units Sold'].apply(lambda x: f"{x:,}".replace(",", ""))
+        st.table(tesla_sales_df)
+        
+        st.write('The following will show the city, with the corresponding number of units sold, where the top model was best sold in the years of interest.')
+        
+        tesla_years_of_interest = [2020, 2021, 2022, 2023, 2024]  #define the years of interest
+        tesla_city_sales = {'Year': [], 'City': [], 'Number of Sales': []}  #initialize a dictionary to store results
+
+        for year_tesla in tesla_years_of_interest:
+            tesla_yearly_data = top_tesla_model_data[top_tesla_model_data['Model Year'] == year_tesla]  #filter data for the specific year
+            tesla_city_sales_data = tesla_yearly_data.groupby('City').size().reset_index(name = 'Number of Sales')  #group by city and count sales
+            tesla_top_city = tesla_city_sales_data.loc[tesla_city_sales_data['Number of Sales'].idxmax()]  #find the city with the highest sales
+            
+            #append results to the dictionary
+            tesla_city_sales['Year'].append(year_tesla)
+            tesla_city_sales['City'].append(tesla_top_city['City'])
+            tesla_city_sales['Number of Sales'].append(tesla_top_city['Number of Sales'])
+
+        tesla_city_sales_df = pd.DataFrame(tesla_city_sales)  #create a DataFrame from the results
+        st.table(tesla_city_sales_df)
+        
     with tab3:
         chevrolet_data = electric_vehicles[electric_vehicles['Make'] == 'CHEVROLET']  #filter the data for Chevrolet models
         chevrolet_top_model_data = chevrolet_data.groupby('Model').size().sort_values(ascending = False)  #find the top Chevrolet model
@@ -223,6 +252,35 @@ elif current_tab == 'Exploratory Data Analysis':
 
         plt.tight_layout()
         st.pyplot(plt.gcf())
+        
+        chevrolet_data = electric_vehicles[electric_vehicles['Make'] == 'CHEVROLET']  #filter the data for Chevrolet models
+        chevrolet_top_model_data = chevrolet_data.groupby('Model').size().sort_values(ascending = False)  #find the top Chevrolet model
+        top_chevrolet_model = chevrolet_top_model_data.index[0]
+        top_chevrolet_model_data = chevrolet_data[chevrolet_data['Model'] == top_chevrolet_model]  #filter the data for the top model
+        chevrolet_yearly_sales = top_chevrolet_model_data.groupby('Model Year').size()  #count the number of units sold per year for the top model
+        chevrolet_sales_df = pd.DataFrame(chevrolet_yearly_sales).reset_index()  #convert the series to a dataframe for clearer printing
+        chevrolet_sales_df.columns = ['Model Year', 'Units Sold']
+        chevrolet_sales_df['Model Year'] = chevrolet_sales_df['Model Year'].astype(str)
+        chevrolet_sales_df['Units Sold'] = chevrolet_sales_df['Units Sold'].apply(lambda x: f"{x:,}".replace(",", ""))
+        st.table(chevrolet_sales_df)
+        
+        st.write('The following will show the city, with the corresponding number of units sold, where the top model was best sold in the years of interest.')
+        
+        chevrolet_years_of_interest = [2017, 2018, 2019, 2020, 2021, 2022, 2023]  #define the years of interest
+        chevrolet_city_sales = {'Year': [], 'City': [], 'Number of Sales': []}  #initialize a dictionary to store results
+
+        for chevrolet_year in chevrolet_years_of_interest:
+            chevrolet_yearly_data = top_chevrolet_model_data[top_chevrolet_model_data['Model Year'] == chevrolet_year]  #filter data for the specific year
+            chevrolet_city_sales_data = chevrolet_yearly_data.groupby('City').size().reset_index(name = 'Number of Sales')  #group by city and count sales
+            chevrolet_top_city = chevrolet_city_sales_data.loc[chevrolet_city_sales_data['Number of Sales'].idxmax()]  #find the city with the highest sales
+            
+            #append results to the dictionary
+            chevrolet_city_sales['Year'].append(chevrolet_year)
+            chevrolet_city_sales['City'].append(chevrolet_top_city['City'])
+            chevrolet_city_sales['Number of Sales'].append(chevrolet_top_city['Number of Sales'])
+
+        chevrolet_city_sales_df = pd.DataFrame(chevrolet_city_sales)  #create a DataFrame from the results
+        st.table(chevrolet_city_sales_df)
         
     with tab4:
         nissan_data = electric_vehicles[electric_vehicles['Make'] == 'NISSAN']  #filter the data for Nissan models
@@ -244,6 +302,35 @@ elif current_tab == 'Exploratory Data Analysis':
         plt.tight_layout()
         st.pyplot(plt.gcf())
         
+        nissan_data = electric_vehicles[electric_vehicles['Make'] == 'NISSAN']  #filter the data for Nissan models
+        nissan_top_model_data = nissan_data.groupby('Model').size().sort_values(ascending = False)  #find the top Nissan model
+        top_nissan_model = nissan_top_model_data.index[0]
+        top_nissan_model_data = nissan_data[nissan_data['Model'] == top_nissan_model]  #filter the data for the top model
+        nissan_yearly_sales = top_nissan_model_data.groupby('Model Year').size()  #count the number of units sold per year for the top model
+        nissan_sales_df = pd.DataFrame(nissan_yearly_sales).reset_index()  #convert the series to a dataframe for clearer printing
+        nissan_sales_df.columns = ['Model Year', 'Units Sold']
+        nissan_sales_df['Model Year'] = nissan_sales_df['Model Year'].astype(str)
+        nissan_sales_df['Units Sold'] = nissan_sales_df['Units Sold'].apply(lambda x: f"{x:,}".replace(",", ""))
+        st.table(nissan_sales_df)
+        
+        st.write('The following will show the city, with the corresponding number of units sold, where the top model was best sold in the years of interest.')
+        
+        nissan_years_of_interest = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]  #define the years of interest
+        nissan_city_sales = {'Year': [], 'City': [], 'Number of Sales': []}  #initialize a dictionary to store results
+
+        for nissan_year in nissan_years_of_interest:
+            nissan_yearly_data = top_nissan_model_data[top_nissan_model_data['Model Year'] == nissan_year]  #filter data for the specific year
+            nissan_city_sales_data = nissan_yearly_data.groupby('City').size().reset_index(name = 'Number of Sales')  #group by city and count sales
+            nissan_top_city = nissan_city_sales_data.loc[nissan_city_sales_data['Number of Sales'].idxmax()]  #find the city with the highest sales
+            
+            #append results to the dictionary
+            nissan_city_sales['Year'].append(nissan_year)
+            nissan_city_sales['City'].append(nissan_top_city['City'])
+            nissan_city_sales['Number of Sales'].append(nissan_top_city['Number of Sales'])
+
+        nissan_city_sales_df = pd.DataFrame(nissan_city_sales)  #create a dataframe from the results
+        st.table(nissan_city_sales_df)
+        
     with tab5:
         ford_data = electric_vehicles[electric_vehicles['Make'] == 'FORD']  #filter the data for Ford models
         ford_top_model_data = ford_data.groupby('Model').size().sort_values(ascending = False)  #find the top Ford model
@@ -263,6 +350,35 @@ elif current_tab == 'Exploratory Data Analysis':
 
         plt.tight_layout()
         st.pyplot(plt.gcf())
+        
+        ford_data = electric_vehicles[electric_vehicles['Make'] == 'FORD']  #filter the data for Ford models
+        ford_top_model_data = ford_data.groupby('Model').size().sort_values(ascending = False)  #find the top Ford model
+        top_ford_model = ford_top_model_data.index[0]
+        top_ford_model_data = ford_data[ford_data['Model'] == top_ford_model]  #filter the data for the top model
+        ford_yearly_sales = top_ford_model_data.groupby('Model Year').size()  #count the number of units sold per year for the top model
+        ford_sales_df = pd.DataFrame(ford_yearly_sales).reset_index()  #convert the series to a dataframe for clearer printing
+        ford_sales_df.columns = ['Model Year', 'Units Sold']
+        ford_sales_df['Model Year'] = ford_sales_df['Model Year'].astype(str)
+        ford_sales_df['Units Sold'] = ford_sales_df['Units Sold'].apply(lambda x: f"{x:,}".replace(",", ""))
+        st.table(ford_sales_df)
+        
+        st.write('The following will show the city, with the corresponding number of units sold, where the top model was best sold in the years of interest.')
+        
+        ford_years_of_interest = [2021, 2022, 2023, 2024]  #define the years of interest
+        ford_city_sales = {'Year': [], 'City': [], 'Number of Sales': []}  #initialize a dictionary to store results
+
+        for ford_year in ford_years_of_interest:
+            ford_yearly_data = top_ford_model_data[top_ford_model_data['Model Year'] == ford_year]  #filter data for the specific year
+            ford_city_sales_data = ford_yearly_data.groupby('City').size().reset_index(name = 'Number of Sales')  #group by city and count sales
+            ford_top_city = ford_city_sales_data.loc[ford_city_sales_data['Number of Sales'].idxmax()]  #find the city with the highest sales
+            
+            #append results to the dictionary
+            ford_city_sales['Year'].append(ford_year)
+            ford_city_sales['City'].append(ford_top_city['City'])
+            ford_city_sales['Number of Sales'].append(ford_top_city['Number of Sales'])
+
+        ford_city_sales_df = pd.DataFrame(ford_city_sales)  #create a DataFrame from the results
+        st.tab(ford_city_sales_df)
         
     with tab6:
         kia_data = electric_vehicles[electric_vehicles['Make'] == 'KIA']  #filter the data for Kia models
@@ -284,6 +400,35 @@ elif current_tab == 'Exploratory Data Analysis':
         plt.tight_layout()
         st.pyplot(plt.gcf())
         
+        kia_data = electric_vehicles[electric_vehicles['Make'] == 'KIA']  #filter the data for Kia models
+        kia_top_model_data = kia_data.groupby('Model').size().sort_values(ascending = False)  #find the top Kia model
+        top_kia_model = kia_top_model_data.index[0]
+        top_kia_model_data = kia_data[kia_data['Model'] == top_kia_model]  #filter the data for the top model
+        kia_yearly_sales = top_kia_model_data.groupby('Model Year').size()  #count the number of units sold per year for the top model
+        kia_sales_df = pd.DataFrame(kia_yearly_sales).reset_index()  #convert the series to a dataframe for clearer printing
+        kia_sales_df.columns = ['Model Year', 'Units Sold']
+        kia_sales_df['Model Year'] = kia_sales_df['Model Year'].astype(str)
+        kia_sales_df['Units Sold'] = kia_sales_df['Units Sold'].apply(lambda x: f"{x:,}".replace(",", ""))
+        st.table(kia_sales_df)
+        
+        st.write('The following will show the city, with the corresponding number of units sold, where the top model was best sold in the years of interest.')
+        
+        kia_years_of_interest = [2018, 2019, 2020, 2021, 2022, 2023, 2024]  #define the years of interest
+        kia_city_sales = {'Year': [], 'City': [], 'Number of Sales': []}  #initialize a dictionary to store results
+
+        for kia_year in kia_years_of_interest:
+            kia_yearly_data = top_kia_model_data[top_kia_model_data['Model Year'] == kia_year]  #filter data for the specific year
+            kia_city_sales_data = kia_yearly_data.groupby('City').size().reset_index(name = 'Number of Sales')  #group by city and count sales
+            kia_top_city = kia_city_sales_data.loc[kia_city_sales_data['Number of Sales'].idxmax()]  #find the city with the highest sales
+            
+            #append results to the dictionary
+            kia_city_sales['Year'].append(kia_year)
+            kia_city_sales['City'].append(kia_top_city['City'])
+            kia_city_sales['Number of Sales'].append(kia_top_city['Number of Sales'])
+
+        kia_city_sales_df = pd.DataFrame(kia_city_sales)  #create a DataFrame from the results
+        st.table(kia_city_sales_df)
+        
     with tab7: 
         bmw_data = electric_vehicles[electric_vehicles['Make'] == 'BMW']  #filter the data for BMW models
         bmw_top_model_data = bmw_data.groupby('Model').size().sort_values(ascending = False)  #find the top BMW model
@@ -303,6 +448,35 @@ elif current_tab == 'Exploratory Data Analysis':
 
         plt.tight_layout()
         st.pyplot(plt.gcf())
+        
+        bmw_data = electric_vehicles[electric_vehicles['Make'] == 'BMW']  #filter the data for BMW models
+        bmw_top_model_data = bmw_data.groupby('Model').size().sort_values(ascending = False)  #find the top BMW model
+        top_bmw_model = bmw_top_model_data.index[0]
+        top_bmw_model_data = bmw_data[bmw_data['Model'] == top_bmw_model]  #filter the data for the top model
+        bmw_yearly_sales = top_bmw_model_data.groupby('Model Year').size()  #count the number of units sold per year for the top model
+        bmw_sales_df = pd.DataFrame(bmw_yearly_sales).reset_index()  #convert the series to a dataframe for clearer printing
+        bmw_sales_df.columns = ['Model Year', 'Units Sold']
+        bmw_sales_df['Model Year'] = bmw_sales_df['Model Year'].astype(str)
+        bmw_sales_df['Units Sold'] = bmw_sales_df['Units Sold'].apply(lambda x: f"{x:,}".replace(",", ""))
+        st.table(bmw_sales_df)
+        
+        st.write('The following will show the city, with the corresponding number of units sold, where the top model was best sold in the years of interest.')
+        
+        bmw_years_of_interest = [2016, 2017, 2018, 2021, 2022, 2023, 2024]  #define the years of interest
+        bmw_city_sales = {'Year': [], 'City': [], 'Number of Sales': []}  #initialize a dictionary to store results
+
+        for bmw_year in bmw_years_of_interest:
+            bmw_yearly_data = top_bmw_model_data[top_bmw_model_data['Model Year'] == bmw_year]  #filter data for the specific year
+            bmw_city_sales_data = bmw_yearly_data.groupby('City').size().reset_index(name = 'Number of Sales')  #group by city and count sales
+            bmw_top_city = bmw_city_sales_data.loc[bmw_city_sales_data['Number of Sales'].idxmax()]  #find the city with the highest sales
+            
+            #append results to the dictionary
+            bmw_city_sales['Year'].append(bmw_year)
+            bmw_city_sales['City'].append(bmw_top_city['City'])
+            bmw_city_sales['Number of Sales'].append(bmw_top_city['Number of Sales'])
+
+        bmw_city_sales_df = pd.DataFrame(bmw_city_sales)  #create a DataFrame from the results
+        st.table(bmw_city_sales_df)
         
     with tab8:
         toyota_data = electric_vehicles[electric_vehicles['Make'] == 'TOYOTA']  #filter the data for Toyota models
@@ -324,6 +498,35 @@ elif current_tab == 'Exploratory Data Analysis':
         plt.tight_layout()
         st.pyplot(plt.gcf())
         
+        toyota_data = electric_vehicles[electric_vehicles['Make'] == 'TOYOTA']  #filter the data for Toyota models
+        toyota_top_model_data = toyota_data.groupby('Model').size().sort_values(ascending = False)  #find the top Toyota model
+        top_toyota_model = toyota_top_model_data.index[0]
+        top_toyota_model_data = toyota_data[toyota_data['Model'] == top_toyota_model]  #filter the data for the top model
+        toyota_yearly_sales = top_toyota_model_data.groupby('Model Year').size()  #count the number of units sold per year for the top model
+        toyota_sales_df = pd.DataFrame(toyota_yearly_sales).reset_index()  #convert the series to a dataframe for clearer printing
+        toyota_sales_df.columns = ['Model Year', 'Units Sold']
+        toyota_sales_df['Model Year'] = toyota_sales_df['Model Year'].astype(str)
+        toyota_sales_df['Units Sold'] = toyota_sales_df['Units Sold'].apply(lambda x: f"{x:,}".replace(",", ""))
+        st.table(toyota_sales_df)
+        
+        st.write('The following will show the city, with the corresponding number of units sold, where the top model was best sold in the years of interest.')
+        
+        toyota_years_of_interest = [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]  #define the years of interest
+        toyota_city_sales = {'Year': [], 'City': [], 'Number of Sales': []}  #initialize a dictionary to store results
+
+        for toyota_year in toyota_years_of_interest:
+            toyota_yearly_data = top_toyota_model_data[top_toyota_model_data['Model Year'] == toyota_year]  #filter data for the specific year
+            toyota_city_sales_data = toyota_yearly_data.groupby('City').size().reset_index(name = 'Number of Sales')  #group by city and count sales
+            toyota_top_city = toyota_city_sales_data.loc[toyota_city_sales_data['Number of Sales'].idxmax()]  #find the city with the highest sales
+            
+            #append results to the dictionary
+            toyota_city_sales['Year'].append(toyota_year)
+            toyota_city_sales['City'].append(toyota_top_city['City'])
+            toyota_city_sales['Number of Sales'].append(toyota_top_city['Number of Sales'])
+
+        toyota_city_sales_df = pd.DataFrame(toyota_city_sales)  #create a DataFrame from the results
+        st.table(toyota_city_sales_df)
+        
     with tab9: 
         volkswagen_data = electric_vehicles[electric_vehicles['Make'] == 'VOLKSWAGEN']  #filter the data for Volkswagen models
         volkswagen_top_model_data = volkswagen_data.groupby('Model').size().sort_values(ascending = False)  #find the top Volkswagen model
@@ -344,6 +547,35 @@ elif current_tab == 'Exploratory Data Analysis':
         plt.tight_layout()
         st.pyplot(plt.gcf())
         
+        volkswagen_data = electric_vehicles[electric_vehicles['Make'] == 'VOLKSWAGEN']  #filter the data for Volkswagen models
+        volkswagen_top_model_data = volkswagen_data.groupby('Model').size().sort_values(ascending = False)  #find the top Volkswagen model
+        top_volkswagen_model = volkswagen_top_model_data.index[0]
+        top_volkswagen_model_data = volkswagen_data[volkswagen_data['Model'] == top_volkswagen_model]  #filter the data for the top model
+        volkswagen_yearly_sales = top_volkswagen_model_data.groupby('Model Year').size()  #count the number of units sold per year for the top model
+        volkswagen_sales_df = pd.DataFrame(volkswagen_yearly_sales).reset_index()  #convert the series to a dataframe for clearer printing
+        volkswagen_sales_df.columns = ['Model Year', 'Units Sold']
+        volkswagen_sales_df['Model Year'] = volkswagen_sales_df['Model Year'].astype(str)
+        volkswagen_sales_df['Units Sold'] = volkswagen_sales_df['Units Sold'].apply(lambda x: f"{x:,}".replace(",", ""))
+        st.table(volkswagen_sales_df)
+        
+        st.write('The following will show the city, with the corresponding number of units sold, where the top model was best sold in the years of interest.')
+        
+        volkswagen_years_of_interest = [2021, 2022, 2023, 2024]  #define the years of interest
+        volkswagen_city_sales = {'Year': [], 'City': [], 'Number of Sales': []}  #initialize a dictionary to store results
+
+        for volkswagen_year in volkswagen_years_of_interest:
+            volkswagen_yearly_data = top_volkswagen_model_data[top_volkswagen_model_data['Model Year'] == volkswagen_year]  #filter data for the specific year
+            volkswagen_city_sales_data = volkswagen_yearly_data.groupby('City').size().reset_index(name = 'Number of Sales')  #group by city and count sales
+            volkswagen_top_city = volkswagen_city_sales_data.loc[volkswagen_city_sales_data['Number of Sales'].idxmax()]  #find the city with the highest sales
+            
+            #append results to the dictionary
+            volkswagen_city_sales['Year'].append(volkswagen_year)
+            volkswagen_city_sales['City'].append(volkswagen_top_city['City'])
+            volkswagen_city_sales['Number of Sales'].append(volkswagen_top_city['Number of Sales'])
+
+        volkswagen_city_sales_df = pd.DataFrame(volkswagen_city_sales)  #create a DataFrame from the results
+        st.table(volkswagen_city_sales_df)
+                        
     with tab10: 
         jeep_data = electric_vehicles[electric_vehicles['Make'] == 'JEEP']  #filter the data for Jeep models
         jeep_top_model_data = jeep_data.groupby('Model').size().sort_values(ascending = False)  #find the top Jeep model
@@ -363,6 +595,35 @@ elif current_tab == 'Exploratory Data Analysis':
 
         plt.tight_layout()
         st.pyplot(plt.gcf())
+        
+        jeep_data = electric_vehicles[electric_vehicles['Make'] == 'JEEP']  #filter the data for Jeep models
+        jeep_top_model_data = jeep_data.groupby('Model').size().sort_values(ascending = False)  #find the top Jeep model
+        top_jeep_model = jeep_top_model_data.index[0]
+        top_jeep_model_data = jeep_data[jeep_data['Model'] == top_jeep_model]  #filter the data for the top model
+        jeep_yearly_sales = top_jeep_model_data.groupby('Model Year').size()  #count the number of units sold per year for the top model
+        jeep_sales_df = pd.DataFrame(jeep_yearly_sales).reset_index()  #convert the series to a dataframe for clearer printing
+        jeep_sales_df.columns = ['Model Year', 'Units Sold']
+        jeep_sales_df['Model Year'] = jeep_sales_df['Model Year'].astype(str)
+        jeep_sales_df['Units Sold'] = jeep_sales_df['Units Sold'].apply(lambda x: f"{x:,}".replace(",", ""))
+        st.table(jeep_sales_df)
+
+        st.write('The following will show the city, with the corresponding number of units sold, where the top model was best sold in the years of interest.')
+        
+        jeep_years_of_interest = [2021, 2022, 2023, 2024]  #define the years of interest
+        jeep_city_sales = {'Year': [], 'City': [], 'Number of Sales': []}  #initialize a dictionary to store results
+
+        for jeep_year in jeep_years_of_interest:
+            jeep_yearly_data = top_jeep_model_data[top_jeep_model_data['Model Year'] == jeep_year]  #filter data for the specific year
+            jeep_city_sales_data = jeep_yearly_data.groupby('City').size().reset_index(name = 'Number of Sales')  #group by city and count sales
+            jeep_top_city = jeep_city_sales_data.loc[jeep_city_sales_data['Number of Sales'].idxmax()]  #find the city with the highest sales
+            
+            #append results to the dictionary
+            jeep_city_sales['Year'].append(jeep_year)
+            jeep_city_sales['City'].append(jeep_top_city['City'])
+            jeep_city_sales['Number of Sales'].append(jeep_top_city['Number of Sales'])
+
+        jeep_city_sales_df = pd.DataFrame(jeep_city_sales)  #create a DataFrame from the results
+        st.table(jeep_city_sales_df)
         
     with tab11:
         hyundai_data = electric_vehicles[electric_vehicles['Make'] == 'HYUNDAI']  #filter the data for Hyundai models
@@ -384,7 +645,34 @@ elif current_tab == 'Exploratory Data Analysis':
         plt.tight_layout()
         st.pyplot(plt.gcf())
 
+        hyundai_data = electric_vehicles[electric_vehicles['Make'] == 'HYUNDAI']  #filter the data for Hyundai models
+        hyundai_top_model_data = hyundai_data.groupby('Model').size().sort_values(ascending = False)  #find the top Hyundai model
+        top_hyundai_model = hyundai_top_model_data.index[0]
+        top_hyundai_model_data = hyundai_data[hyundai_data['Model'] == top_hyundai_model]  #filter the data for the top model
+        hyundai_yearly_sales = top_hyundai_model_data.groupby('Model Year').size()  #count the number of units sold per year for the top model
+        hyundai_sales_df = pd.DataFrame(hyundai_yearly_sales).reset_index()  #convert the series to a dataframe for clearer printing
+        hyundai_sales_df.columns = ['Model Year', 'Units Sold']
+        hyundai_sales_df['Model Year'] = hyundai_sales_df['Model Year'].astype(str)
+        hyundai_sales_df['Units Sold'] = hyundai_sales_df['Units Sold'].apply(lambda x: f"{x:,}".replace(",", ""))
+        st.table(hyundai_sales_df)
+        
+        st.write('The following will show the city, with the corresponding number of units sold, where the top model was best sold in the years of interest.')
 
+        hyundai_years_of_interest = [2022, 2023, 2024]  #define the years of interest
+        hyundai_city_sales = {'Year': [], 'City': [], 'Number of Sales': []}  #initialize a dictionary to store results
+
+        for hyundai_year in hyundai_years_of_interest:
+            hyundai_yearly_data = top_hyundai_model_data[top_hyundai_model_data['Model Year'] == hyundai_year]  #filter data for the specific year
+            hyundai_city_sales_data = hyundai_yearly_data.groupby('City').size().reset_index(name = 'Number of Sales')  #group by city and count sales
+            hyundai_top_city = hyundai_city_sales_data.loc[hyundai_city_sales_data['Number of Sales'].idxmax()]  #find the city with the highest sales
+            
+            #append results to the dictionary
+            hyundai_city_sales['Year'].append(hyundai_year)
+            hyundai_city_sales['City'].append(hyundai_top_city['City'])
+            hyundai_city_sales['Number of Sales'].append(hyundai_top_city['Number of Sales'])
+
+        hyundai_city_sales_df = pd.DataFrame(hyundai_city_sales)  #create a DataFrame from the results
+        st.table(hyundai_city_sales_df)
 
 ##########correlation
 elif current_tab == 'Correlation':

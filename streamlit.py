@@ -33,6 +33,7 @@ st.sidebar.markdown(
 )
 
 
+
 ##########introduction
 if current_tab == 'Introduction':
     st.markdown('<h1 style = "text-align: center;"> Registered electric cars in the USA </h1>', unsafe_allow_html = True)
@@ -96,6 +97,7 @@ elif current_tab == 'Cleaning':
         
     st.markdown('''
                 In this case, since the 'County', 'City' and 'Electric Utility' columns contain categorical variables and not numeric variables, it would not be correct to replace missing values with mathematical operations such as mode or median. So the null values have been dropped.''')
+
 
 
 ##########exlporatory data analysis 
@@ -378,7 +380,7 @@ elif current_tab == 'Exploratory Data Analysis':
             ford_city_sales['Number of Sales'].append(ford_top_city['Number of Sales'])
 
         ford_city_sales_df = pd.DataFrame(ford_city_sales)  #create a DataFrame from the results
-        st.tab(ford_city_sales_df)
+        st.table(ford_city_sales_df)
         
     with tab6:
         kia_data = electric_vehicles[electric_vehicles['Make'] == 'KIA']  #filter the data for Kia models
@@ -674,11 +676,16 @@ elif current_tab == 'Exploratory Data Analysis':
         hyundai_city_sales_df = pd.DataFrame(hyundai_city_sales)  #create a DataFrame from the results
         st.table(hyundai_city_sales_df)
 
+
+
 ##########correlation
 elif current_tab == 'Correlation':
     st.title('Correlations between values')
     
+    st.write('Now let''s see some correlations')
+    
     #heatmap
+    electric_vehicles = electric_vehicles.drop(['VIN (1-10)', 'Postal Code', 'Base MSRP', 'Legislative District', 'DOL Vehicle ID', 'Vehicle Location', '2020 Census Tract'], axis = 1)  #drop specified columns from the dataframe
     electric_vehicles_corr = electric_vehicles.corr(numeric_only = True)
     plt.figure(figsize = (12, 6))
     plt.figure(figsize = (12, 6))
@@ -692,6 +699,18 @@ elif current_tab == 'Correlation':
     plt.tight_layout()
     st.pyplot(plt.gcf())
     
+    filtered_data1 = electric_vehicles[(electric_vehicles['Model Year'] >= 2005) & (electric_vehicles['Electric Range'].notna())]  #filter the data to include only models from 2005 onwards and only with available electric range (not NaN)
+    correlation1 = filtered_data1[['Model Year', 'Electric Range']].corr().iloc[0, 1]  #calculate the correlation between 'Model Year' and 'Electric Range'
+    st.write(f'The correlation between model year (from 2005) and electric range is {correlation1:.2f}')
+    
+    filtered_data2 = electric_vehicles[(electric_vehicles['Model Year'] >= 2020) & (electric_vehicles['Model Year'] <= 2024) & (electric_vehicles['Electric Range'].notna())]  #filter the data to include only models from 2020 to 2025 and only with available electric range (not NaN)
+    correlation2 = filtered_data2[['Model Year', 'Electric Range']].corr().iloc[0, 1]  #calculate the correlation between 'Model Year' and 'Electric Range'
+    st.write(f'The correlation between model year and electric range (years 2021-2024) is {correlation2:.2f}')
+    
+    st.write('A negative correlation of -0.58 between ''Model Year'' and ''Electric Range'' related to the last 5 years, may seem weird, but several factors can explain it. Manufacturers may focus on features other than range, such as performance or connectivity. Diversification of models and possible discontinuation of those with high range may negatively affect the correlation.  In addition, a limited or unrepresentative data sample may skew the results. A drop in sales or market slowdown may lead manufacturers to reduce the supply of models with high autonomy. In summary, negative correlation is the result of various technological, strategic, and market factors.')
+    
+    st.write('Since the dataset has a large number of data, in order to have understandable graphs using linear regression, the data will be sampled at a fraction of 0.05%. In addition, this, also allows for a higher value negative correlation. ')
+    
     vehicles_counts_by_name = electric_vehicles.groupby('Make').size().sort_values(ascending = False)
     top_companies = vehicles_counts_by_name.index[:10]
     
@@ -704,7 +723,7 @@ elif current_tab == 'Correlation':
 
     sampled_data = filtered_data3.sample(frac = 0.005, random_state = 42)  #reduce the data by sampling a fraction (0.005) of the original data
     correlation_sampled = sampled_data[['Model Year', 'Electric Range']].corr().iloc[0, 1]  #calculate the correlation between 'Model Year' and 'Electric Range' in the sampled data
-    st.write(f'The correlation between (sampled) model year and electric range is {correlation_sampled:.2f}')
+    st.write(f'In fact, the correlation between (sampled) model year and electric range is {correlation_sampled:.2f}')
     
 
 
@@ -735,22 +754,34 @@ elif current_tab == 'Modelling with ML Algorithms':
     
     y_pred = model.predict(x_test_scaled)  #the .predict() method computes the predicted values of the target variable based on the test features (x_test_scaled)
     
+    st.write('Now let''s see some ML features.')
+
     score = model.score(x_test_scaled, y_test)  #the .score() method computes how well the model's predictions match the actual target values
     st.write("Coefficient of determination (R-squared):", score)
+    
+    st.write('The R-squared score ranges from 0 to 1, where 1 indicates a perfect fit and 0 indicates no explanatory power. An R-squared value of -0.06721275511743419 indicates that the model is performing poorly, even worse than a simple model that predicts the average target value.')
     
     slope = model.coef_  #the .coef_ attribute of the LinearRegression model contains the coefficients (weights) for each feature
     st.write('Coefficients:', slope)
     
+    st.write('The coefficient value of -82.08462005 indicates a strong negative relationship between the feature and the target variable. For every one-unit increase in the feature, the target variable is predicted to decrease by approximately 82.08 units. ')
+    
     intercept = model.intercept_  #the .intercept_ attribute contains the intercept of the linear regression equation
     st.write('Intercepts:', intercept)
     
+    st.write('The intercept value of -3.460796075479035 indicates that, when all feature values are zero, the model predicts a target value of approximately -3.46. This negative intercept represents the baseline prediction of the target variable and helps to set the starting point for the model''s predictions before the influence of the features is considered.')
+    
     r2 = r2_score(y_test, y_pred)  # The r2_score function computes the R-squared value, which measures how well the model's predictions match the actual target values
     st.write('Coefficient of determination (R^2):', r2)
+    
+    st.write('The R-squared value of -0.06721275511743419 indicates that the model''s performance is poor and worse than predicting the mean of the target variable. This negative value suggests that the model is not capturing the underlying patterns in the data effectively, and there may be issues with the model choice, feature selection, or data quality. ')
     
     mse = mean_squared_error(y_test, y_pred)  #the mean_squared_error function computes the average of the squared differences between the actual and predicted values
     target_variance = np.var(y_test)  #np.var computes the variance of the actual target values
     mse_to_variance_ratio = mse / target_variance  #this ratio provides a measure of how the model's error compares to the variance in the target variable
     st.write("MSE to Variance Ratio:", mse_to_variance_ratio)
+    
+    st.write('A MSE to Variance Ratio of 1.0672127551174342 indicates that the Mean Squared Error of the model''s predictions is slightly larger than the variance of the target variable. This suggests that the model’s errors are significant relative to the natural variability in the target, and the model may not be performing well. ')
     
     plt.figure(figsize = (10, 6))
     plt.plot(y_test, color = 'blue', linewidth = 1.5, label = 'Actual')
@@ -765,6 +796,8 @@ elif current_tab == 'Modelling with ML Algorithms':
 
     plt.tight_layout()
     st.pyplot(plt.gcf())
+    
+    st.write('Already from the numerical values it could be expected that the graph would be inaccurate. Here it can actually be seen that the actual values are quite discordant with the predicted values.')
     
     intercept = model.intercept_  #he .intercept_ attribute contains the constant term of the linear regression equation
     slope = model.coef_[0]  # The .coef_ attribute contains the coefficient for each feature in the model
@@ -821,3 +854,5 @@ elif current_tab == 'Modelling with ML Algorithms':
 
     plt.tight_layout()
     st.pyplot(plt.gcf())
+    
+    st.write('The graph shows the relationship between the year of production and the electric range of electric vehicles, grouped into different clusters identified by different colors. The dots in the graph indicate vehicle models that have been grouped into distinct clusters based on their range characteristics. A clear trend can be seen in the data, where newer vehicles tend to be clustered together (right end), suggesting that newer models have similar range characteristics. In addition, there are areas of the graph where data are missing, which could indicate an absence of vehicle models in those years or autonomy ranges, suggesting potential gaps in the market or areas for future development.')
